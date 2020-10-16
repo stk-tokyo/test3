@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <title>GPSちゃんねる</title>
+  <meta charset="UTF-8">
+  <link rel="shortcut icon" href="fig/icon2.png" type="image/vnd.microsoft.icon">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="style.css">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+  <meta charset="utf-8">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    #map {
+      height: 80%;
+      width: 80%;
+    }
+  </style>
+</head>
+<body>
+
+<div><h1></h1></div>
+<div><font color="orange" face="Comic Sans MS" size="6"><b>緯度経度取得</b></font></div>
+  <font face="Comic Sans MS">
+  <div id="map" style="width:900px; height:600px; position:absolute; top:140px; left:10px;"></div>
+  <ul style="position:absolute; top:155px; left:930px;"><font font size="5">
+    <li><b>cnt: </b><span id="cnt"></span></li>
+    <li><b>lat: </b><span id="lat"></span></li>
+    <li><b>lng: </b><span id="lng"></span></li>
+  </font>
+  </ul>
+
+<form style="width:350px; height:400px; position:absolute; top:300px; left:950px;">
+  <select id="place" style="width:200px; height:52px;"><font size="5"> 
+    <option value="">地域を選択してください</option>
+    <option value="yawatahama">八幡浜市街</option>
+    <option value="minatoura">湊浦</option>
+    <option value="sionasi">塩成</option>
+  </font>
+  </select>
+<input type="button" value="GO" onclick="calcBmi();" style="position:relative; top: -52px; left:25px;">
+<input type="button" value="Save as CSV file" onclick="save();" style="position:relative; top: 20px; left:-135px;">
+</form>
+
+
+  <script>
+    var array0 = [['marker','latitude','longitude']];
+  var table  = array0;
+
+  // 場所選択時における画面遷移
+  function move(st_lat,st_lng) {
+  // マップの初期化
+    var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 17,
+    center: {lat: st_lat, lng: st_lng}
+    });
+    // クリックイベントを追加
+    map.addListener('click', function(e) {
+      getClickLatLng(e.latLng, map);
+    });
+  }
+
+  function calcBmi(){
+	var place = document.getElementById('place').value;
+	if(place == 'yawatahama'){
+	   move(33.462899,132.423363);
+        }else if(place=='minatoura'){
+           move(33.488573,132.354165);   
+	}else if(place=='sionasi'){
+           move(33.443015,132.258223); 
+        }
+  }
+
+
+    var click_count = 0;
+   
+    function initMap() {
+      // マップの初期化
+      var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 17,
+        center: {lat:33.462899, lng: 132.423363},
+      });
+
+      // クリックイベントを追加
+      map.addListener('click', function(e) {
+        getClickLatLng(e.latLng, map);
+      });
+    }
+
+    function getClickLatLng(lat_lng, map) {
+      click_count++;
+        str_cnt = String(click_count);
+      str_lat = String(lat_lng.lat());
+      str_lng = String(lat_lng.lng());
+      var array1 = [str_cnt, str_lat, str_lng];
+      array0.push(array1);
+      // 座標を表示
+      document.getElementById('lat').textContent = lat_lng.lat();
+      document.getElementById('lng').textContent = lat_lng.lng();
+      document.getElementById('cnt').textContent = click_count;
+  
+
+      // マーカーを設置
+      var marker = new google.maps.Marker({
+        position: lat_lng,
+        map: map
+      });
+
+      var size = new google.maps.Size( 200, 200 ) ;
+
+      // 座標の中心をずらす
+           map.panTo(lat_lng);
+    }
+
+
+    // CSVファイルに出力するための関数
+    var downloadCsv = (function() {
+      var tableToCsvString = function(table) {
+          var str = '\uFEFF';
+          for (var i = 0, imax = table.length - 1; i <= imax; ++i) {
+              var row = table[i];
+              for (var j = 0, jmax = row.length - 1; j <= jmax; ++j) {
+                  str += '"' + row[j].replace('"', '""') + '"';
+                  if (j !== jmax) {
+                      str += ',';
+                  }
+              }
+              str += '\n';
+          }
+          return str;
+      };
+
+      var createDataUriFromString = function(str) {
+          return 'data:text/csv,' + encodeURIComponent(str);
+      }
+
+      var downloadDataUri = function(uri, filename) {
+          var link = document.createElement('a');
+          link.download = filename;
+          link.href = uri;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+      };
+
+      return function(table, filename) {
+          if (!filename) {
+              filename = 'output.csv';
+          }
+          var uri = createDataUriFromString(tableToCsvString(table));
+          downloadDataUri(uri, filename);
+      };
+    })();
+
+
+    // CSVに出力
+    function save(){
+      //var table = array0;
+        downloadCsv(table);
+    }
+
+
+  </script>
+  <script src="//maps.google.com/maps/api/js?key=AIzaSyBmGlUg-_VJxe_x8HCVnJAZoJPFy1tirQ4&callback=initMap" async defer></script>
+</body>
+</html>
