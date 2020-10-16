@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <title>GPSちゃんねる</title>
+  <meta charset="UTF-8">
+  <link rel="shortcut icon" href="fig/icon2.png" type="image/vnd.microsoft.icon">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="style.css">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+  <meta charset="utf-8">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    #map {
+      height: 80%;
+      width: 80%;
+    }
+  </style>
+</head>
+<body>
+
+<div><h1></h1></div>
+<div><font color="orange" face="Comic Sans MS" size="6"><b>Map builder for the autonomous navigation</b></font></div>
+  <font face="Comic Sans MS">
+  <div id="map" style="width:900px; height:600px; position:absolute; top:140px; left:10px;"></div>
+  <ul style="position:absolute; top:155px; left:930px;"><font font size="5">
+    <li><b>cnt: </b><span id="cnt"></span></li>
+    <li><b>lat: </b><span id="lat"></span></li>
+    <li><b>lng: </b><span id="lng"></span></li>
+    <!--<li>lat_log: <span id="lat_log"></span></li>-->
+  </font>
+  </ul>
+<div class="title"><img src="fig/GPS.png" width=300></div>
+<!--</div>-->
+<form style="width:350px; height:400px; position:absolute; top:300px; left:950px;">
+<!--<label>体重を入力して下さい:</label><input type="text" id="id01"><br/></br>
+<label>身長をメートルで入力して下さい:</label><input type="text" id="id02"><br/>-->
+  <select id="place" style="width:200px; height:52px;"><font size="5"> 
+    <option value="">場所を選択してね</option>
+    <option value="oyama">小山高専</option>
+    <option value="tsukuba">つくばチャレンジ</option>
+    <option value="daigaku">筑波大学</option>
+  </font>
+  </select>
+<input type="button" value="GO" onclick="calcBmi();" style="position:relative; top: -52px; left:25px;">
+<input type="button" value="Save as CSV file" onclick="save();" style="position:relative; top: 20px; left:-135px;">
+</form>
+
+
+
+
+<!--</div>-->
+
+
+
+
+
+
+
+
+
+
+  <!--以下JavaScript-->
+  <script>
+  //var table = [['cp','lat','lng']];
+  //var table = [['cp','latirude', 'longitude'], ['1','36', '137']];
+  var array0 = [['marker','latitude','longitude']];
+  var table  = array0;
+
+  //var n = 0;
+  //var o = 0;
+
+  // 場所選択時における画面遷移
+  function move(st_lat,st_lng) {
+  // マップの初期化
+    var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 19,
+    center: {lat: st_lat, lng: st_lng},
+    mapTypeId: google.maps.MapTypeId.SATELLITE ,
+    //backgroundColor: "red" ,
+    });
+    // クリックイベントを追加
+    map.addListener('click', function(e) {
+      getClickLatLng(e.latLng, map);
+    });
+  }
+
+  function calcBmi(){
+	var place = document.getElementById('place').value;
+	if(place == 'oyama'){
+	   move(36.318940,139.842150);
+        }else if(place=='tsukuba'){
+           move(36.080349,140.115203);   
+	}else if(place=='daigaku'){
+           move(36.109101,140.103641); 
+        }
+  }
+
+
+    var click_count = 0;
+    //var array0 = [['cp','lat','lng']];
+
+    function initMap() {
+      // マップの初期化
+      var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 19,
+        center: {lat:36.38992, lng: 139.06065},
+        mapTypeId: google.maps.MapTypeId.SATELLITE ,
+        //backgroundColor: "red" ,
+      });
+
+      // クリックイベントを追加
+      map.addListener('click', function(e) {
+        getClickLatLng(e.latLng, map);
+      });
+    }
+
+
+    //var n = '';
+    //var o = '';
+
+    function getClickLatLng(lat_lng, map) {
+      click_count++;
+      //n = new google.maps.LatLng(lat_lng.lat(),lat_lng.lng());
+      //var distance = google.maps.geometry.spherical.computeDistanceBetween(o,n);
+      //o = new google.maps.LatLng(lat_lng.lat(),lat_lng.lng());
+      str_cnt = String(click_count);
+      str_lat = String(lat_lng.lat());
+      str_lng = String(lat_lng.lng());
+      var array1 = [str_cnt, str_lat, str_lng];
+      array0.push(array1);
+      //str = array0.join(',');
+      // 座標を表示
+      document.getElementById('lat').textContent = lat_lng.lat();
+      document.getElementById('lng').textContent = lat_lng.lng();
+      document.getElementById('cnt').textContent = click_count;
+      //document.getElementById('lat_log').textContent = String(distance);
+
+
+      // マーカーを設置
+      var marker = new google.maps.Marker({
+        position: lat_lng,
+        map: map,
+        animation: google.maps.Animation.BOUNCE ,
+        opacity: 0.7,
+        label: {
+		text:""+click_count,
+		color: "white" ,
+		fontSize: "20px" ,
+	},
+        icon: {
+		url: "./fig/marker.png" ,
+		scaledSize: new google.maps.Size(15,30) ,
+	},
+      });
+
+      var size = new google.maps.Size( 200, 200 ) ;
+
+      // 座標の中心をずらす
+      // http://syncer.jp/google-maps-javascript-api-matome/map/method/panTo/
+      map.panTo(lat_lng);
+      
+     //o = new google.maps.LatLng(lat_lng.lat(),lat_lng.lng());
+
+    }
+
+
+    // CSVファイルに出力するための関数
+    var downloadCsv = (function() {
+      var tableToCsvString = function(table) {
+          var str = '\uFEFF';
+          for (var i = 0, imax = table.length - 1; i <= imax; ++i) {
+              var row = table[i];
+              for (var j = 0, jmax = row.length - 1; j <= jmax; ++j) {
+                  str += '"' + row[j].replace('"', '""') + '"';
+                  if (j !== jmax) {
+                      str += ',';
+                  }
+              }
+              str += '\n';
+          }
+          return str;
+      };
+
+      var createDataUriFromString = function(str) {
+          return 'data:text/csv,' + encodeURIComponent(str);
+      }
+
+      var downloadDataUri = function(uri, filename) {
+          var link = document.createElement('a');
+          link.download = filename;
+          link.href = uri;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+      };
+
+      return function(table, filename) {
+          if (!filename) {
+              filename = 'output.csv';
+          }
+          var uri = createDataUriFromString(tableToCsvString(table));
+          downloadDataUri(uri, filename);
+      };
+    })();
+
+
+    // CSVに出力
+    function save(){
+      //var table = array0;
+        downloadCsv(table);
+    }
+
+
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?signed_in=true&callback=initMap" async defer></script>
+<marquee style="position:absolute; top:750px; left:;"><font color="blue" face="Comic Sans MS">Developed by <b>Shuto Kawabata</b>. All rights reserved <a href="https://github.com/shutokawabata0723/FOR_RAHOK_SENSE" target="_blank"><b>on Github<img src="fig/github.png" width=20>(click me!! and you can see how to use)</b></a></marquee>
+</font>
+</body>
+</html>
