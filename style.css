@@ -1,0 +1,26 @@
+body {
+  background: #f5f5f5;
+  font-family: Meiryo;
+  height: 90%;
+  padding: 20px;
+  text-align:left;
+  line-height: 1.4;
+}
+#map {
+  height: 500px;
+  width: 90%;
+  align: center;
+}
+#question{
+  list-style-type:none;
+}  
+label{
+  display: block;
+}
+select{
+  display: block;
+}
+.q input{
+  display: block;
+  width: 70%
+}
