@@ -11,7 +11,7 @@ body {
   list-style-type:none;
 }  
 .q {
-  margin:5px;
+  margin:10px;
 }
 label{
   display: block;
@@ -24,6 +24,6 @@ select{
 .q input{
   margin:5px;
   display: block;
-  height:5px;
+  height:10px;
   /* width: 70%; */
 }
