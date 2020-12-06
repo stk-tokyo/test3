@@ -22,5 +22,5 @@ select{
 .q input{
   display: block;
   width: 70%;
-/* line-height: 1.7; */
+  line-height: 3;
 }
