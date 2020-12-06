@@ -9,18 +9,21 @@ body {
 
 #question{
   list-style-type:none;
-  line-height: 3;
 }  
+.q {
+  margin:5px;
+}
 label{
   display: block;
-  line-height: 1.7;
+  
 }
 select{
   display: block;
-  line-height: 1.7;
+  margin:5px;
 }
 .q input{
+  margin:5px;
   display: block;
-  width: 70%;
-  /* line-height: 2;*/
+  height:5px;
+  /* width: 70%; */
 }
