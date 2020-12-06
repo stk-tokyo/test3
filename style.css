@@ -4,23 +4,23 @@ body {
   height: 90%;
   padding: 5px;
   text-align:left;
-  line-height: 1.7;
+  /* line-height: 1.7; */
 }
 
 #question{
   list-style-type:none;
-  line-height: 1.7;
+  line-height: 3;
 }  
 label{
   display: block;
-  line-height: 1.7;
+  /* line-height: 1.7; */
 }
 select{
   display: block;
-  line-height:1.7;
+/* line-height: 1.7; */
 }
 .q input{
   display: block;
   width: 70%;
-  line-height:1.7;
+/* line-height: 1.7; */
 }
