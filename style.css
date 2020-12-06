@@ -10,20 +10,15 @@ body {
 #question{
   list-style-type:none;
 }  
-.q {
+#question li {
   margin:10px;
 }
 label{
   display: block;
-  
 }
 select{
   display: block;
-  margin:5px;
 }
 .q input{
-  margin:5px;
   display: block;
-  height:10px;
-  /* width: 70%; */
 }
