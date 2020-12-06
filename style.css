@@ -17,7 +17,7 @@ body {
 }  
 #question{
   list-style-type:none;
-  margin-bottom:10px
+  margin-bottom:20px
 }  
 #question li {
   margin:20px;
@@ -30,4 +30,12 @@ select{
 }
 .q input{
   display: block;
+}
+
+/* 画面サイズが480以下（スマホ）のときに適応されるCSS */
+/* 変更点だけを書けばおk　！！ */
+@media screen and (max-width:480px) { 
+   #question li {
+  margin:5px;
+}
 }
